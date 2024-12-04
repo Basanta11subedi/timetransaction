@@ -16,7 +16,7 @@ function App() {
   const [timeStamp, setTimeStamp] = useState(null);
   const [account, setAccount] = useState(null);
 
-  const contractAddress = '0xCc181C5Df1e31d8ad8ED621946255C0443e84125';
+  const contractAddress = '0xf85Ffd9205FBf5cDA31d422cf69Fdc8C77137cCd';
 
   
   const connectWallet = async () => {

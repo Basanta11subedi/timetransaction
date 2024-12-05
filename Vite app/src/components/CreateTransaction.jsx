@@ -124,7 +124,7 @@ const CreateTransaction = () => {
   };
 
   return (
-    <div>
+    <div class="flex-grow items-center justify-center">
       <div ><button class= "color: bg-green-500 rounded-2xl pr-2 pl-2  hover:bg-blue-950 hover:text-white" onClick={connectWallet}>Connect Wallet</button>
       </div>
       <form onSubmit={handleSubmit}>

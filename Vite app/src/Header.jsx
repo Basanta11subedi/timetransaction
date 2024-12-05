@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
-    <nav class="container mx:auto flex justify-between items-center">
+    <nav class="container mx:auto flex w-full justify-between items-center">
       <div  class="navbar-logo size-20"><img src="https://www.buildersacademy.ai/assets/icons/logowhite.svg" alt="" /></div>{' '}
       <ul class="flex space-x-4">
         <li class="text-lg hover:to-blue-950">

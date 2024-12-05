@@ -16,16 +16,22 @@ function App() {
 
   return (
     <div>
+      <div>
       <Router>
-        <Header />
+      <Header />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/transactions" element={<TransactionPool />} />
           <Route path="/createTransaction" element={<CreateTransaction />} />
         </Routes>
-        <Footer />
       </Router>
+      <div>
+
+      </div>
+      <Footer />
+      </div>
+   
     </div>
   );
 }

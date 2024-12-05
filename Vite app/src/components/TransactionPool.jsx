@@ -1,27 +1,16 @@
 import { ethers } from 'ethers';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ABI from '../constrants/ABI.json';
-// import { contractAddress } from '../constrants/ContractAdd';
-import { useEffect, useState } from 'react';
 
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
-const contractAddress = '0xe3Da69444b7F1f9e6910Fbf4fdA654835ACE9762';
+const contractAddress = '0xFD8046c82ac3B1B5A5F45922abE4334970e4aA6b';
 const contract = new ethers.Contract(contractAddress, ABI, signer);
 
 const TransactionPool = () => {
   const [transactions, setTransactions] = useState([]);
-  const truncate = (text, startChars, endChars, maxLength) => {
-    if (text.length > maxLength) {
-      var start = text.substring(0, startChars);
-      var end = text.substring(text.length - endChars, text.length);
-      while (start.length + end.length < maxLength) {
-        start = start + '.';
-      }
-      return start + end;
-    }
-    return text;
-  };
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -29,8 +18,7 @@ const TransactionPool = () => {
         const signer = provider.getSigner();
         const connectedContract = contract.connect(signer);
         const allTransactions = await connectedContract.getAllTransactions();
-        console.log(allTransactions);
-
+        
         setTransactions(
           allTransactions.map(tx => ({
             creator: truncate((tx.creator).toString(), 4, 4, 11),
@@ -41,40 +29,23 @@ const TransactionPool = () => {
             tip: ethers.utils.formatEther(tx.tip),
             transactionFee: ethers.utils.formatEther((tx.amount * 1)/100),
             status: tx.status,
-          })),
+            transactionFee: ethers.utils.formatEther(tx.amount) * 0.01 // 1% transaction fee
+          }))
         );
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching transactions:', error);
+        setLoading(false);
       }
     };
     fetchTransactions();
   }, []);
 
-  //   const onClick = async transactionId => {
-  //     await provider.send('eth_requestAccounts', []);
-  //     const signer = provider.getSigner();
-  //     const connectedContract = contract.connect(signer);
-  //     const id = transactionId;
-
-  //     const revertTransactions = await connectedContract.RevertTransaction(id);
-
-  //     await revertTransactions.wait();
-  //   };
-
   const handleRevertClick = async transactionId => {
     try {
-      //   await provider.send('eth_requestAccounts', []);
-      //   const signer = provider.getSigner();
-      //   const connectedContract = contract.connect(signer);
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
-
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       const revertTransaction = await contract.RevertTransaction(transactionId);
-      console.log('transaction id:', transactionId);
-
       await revertTransaction.wait();
-      // Optionally, refetch transactions to update the UI
     } catch (error) {
       console.error('Error reverting transaction:', error);
     }
@@ -82,56 +53,81 @@ const TransactionPool = () => {
 
   const handleExecuteClick = async transactionId => {
     try {
-      //   await provider.send('eth_requestAccounts', []);
-      //   const signer = provider.getSigner();
-      //   const connectedContract = contract.connect(signer);
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
-      console.log('transaction id:', transactionId);
-
-      const executeTransaction =
-        await contract.ExecuteTransaction(transactionId);
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const executeTransaction = await contract.ExecuteTransaction(transactionId);
       await executeTransaction.wait();
-      // Optionally, refetch transactions to update the UI
     } catch (error) {
-      console.error('Error execute transaction:', error);
+      console.error('Error executing transaction:', error);
     }
   };
 
   return (
-    <div>
-      <h1>Transactions</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Index</th>
-            <th>Creator</th> <th>Recipient</th> <th>Amount</th>
-            <th>Created At</th> <th>Execution Time</th> <th>Tip</th><th>transaction fee</th>
-            <th>Status</th>
-            <th>Revert</th>
-            <th>Execute</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((tx, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{tx.creator}</td> <td>{tx.recipient}</td>
-              <td>{tx.amount} ETH</td> <td>{tx.createdAt}</td>
-              <td>{tx.executionTime}</td> <td>{tx.tip} ETH</td>
-              <td>{tx.transactionFee}</td>
-              <td>{tx.status}</td>
-              <td>
-                <button onClick={() => handleRevertClick(index)}>Yes</button>
-              </td>
-              <td>
-                <button onClick={() => handleExecuteClick(index)}>Yes</button>
-              </td>
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-semibold mb-6">Transactions</h1>
+      {loading ? (
+        <p>Loading transactions...</p>
+      ) : (
+        <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+          <thead>
+            <tr className="bg-gray-200 text-left">
+              <th className="px-4 py-2">Index</th>
+              <th className="px-4 py-2">Creator</th>
+              <th className="px-4 py-2">Recipient</th>
+              <th className="px-4 py-2">Amount</th>
+              <th className="px-4 py-2">Transaction Fee</th>
+              <th className="px-4 py-2">Created At</th>
+              <th className="px-4 py-2">Execution Time</th>
+              <th className="px-4 py-2">Tip</th>
+              <th className="px-4 py-2">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {transactions.map((tx, index) => (
+              <tr key={index} className="border-b hover:bg-gray-100">
+                <td className="px-4 py-2">{index + 1}</td>
+                <td className="px-4 py-2">{tx.creator}</td>
+                <td className="px-4 py-2">{tx.recipient}</td>
+                <td className="px-4 py-2">{tx.amount} ETH</td>
+                <td className="px-4 py-2">{tx.transactionFee} ETH</td>
+                <td className="px-4 py-2">{tx.createdAt}</td>
+                <td className="px-4 py-2">{tx.executionTime}</td>
+                <td className="px-4 py-2">{tx.tip} ETH</td>
+                <td className="px-4 py-2">
+                  {tx.status === 0 && ( // Pending
+                    <>
+                      {tx.creator === signer._address && ( // Creator can revert
+                        <button
+                          onClick={() => handleRevertClick(index)}
+                          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 mr-2"
+                        >
+                          Revert
+                        </button>
+                      )}
+                      {tx.recipient !== signer._address && ( // Execute if not the recipient
+                        <button
+                          onClick={() => handleExecuteClick(index)}
+                          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"
+                        >
+                          Execute
+                        </button>
+                      )}
+                      <span className="text-yellow-500">Pending</span>
+                    </>
+                  )}
+
+                  {tx.status === 1 && ( // Executed
+                    <span className="text-green-500">Executed</span>
+                  )}
+
+                  {tx.status === 2 && ( // Reverted
+                    <span className="text-red-500">Reverted</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

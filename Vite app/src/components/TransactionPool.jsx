@@ -1,6 +1,8 @@
 import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import ABI from '../constrants/ABI.json';
+import CreateTransaction from './CreateTransaction';
+import { Link } from 'react-router-dom';
 
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
@@ -37,6 +39,7 @@ const TransactionPool = () => {
         );
         setCreator(tx.creator);
         setRecipient(tx.recipient);
+        console.log(transactions.status);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching transactions:', error);
@@ -67,8 +70,12 @@ const TransactionPool = () => {
   };
 
   return (
+    <div>
+    
     <div className="container mx-auto p-6">
+    <h1 className="text-3xl font-semibold mb-6"><Link to="/createTransaction">Create Transaction</Link></h1>
       <h1 className="text-3xl font-semibold mb-6">Transactions</h1>
+      
       {loading ? (
         <p>Loading transactions...</p>
       ) : (
@@ -124,7 +131,7 @@ const TransactionPool = () => {
                     <span className="text-green-500">Executed</span>
                   )}
 
-                  {tx.status === 2 && ( // Reverted
+                  {tx.status === 3 && ( // Reverted
                     <span className="text-red-500">Reverted</span>
                   )}
                 </td>
@@ -133,6 +140,7 @@ const TransactionPool = () => {
           </tbody>
         </table>
       )}
+    </div>
     </div>
   );
 };

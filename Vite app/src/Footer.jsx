@@ -1,18 +1,31 @@
-import React from 'react'
+import React from 'react';
 
 const Footer = () => {
   return (
-    <div class="absolute inset-x-0 bottom-0 h-16">
-        <div>
-            <p>Contact At:</p>
+    <div className="w-full bg-gray-800 text-white py-4">
+      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
+        <p className="text-center md:text-left">Contact At:</p>
+        <div className="flex flex-col items-center md:items-start space-y-2">
+          <a
+            href="mailto:contact@buildersacademy.ai"
+            className="text-blue-500 hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Gmail Id
+          </a>
+          <a
+            href="https://www.linkedin.com/company/buildersacademy/"
+            className="text-blue-500 hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn
+          </a>
         </div>
-        <div >
-        <a href="contact@buildersacademy.ai" class="text-blue-600 visited:text-purple-60 " target= "_blank">Gmail Id</a>
-        </div>
-        
-      
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

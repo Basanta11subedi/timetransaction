@@ -3,20 +3,29 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
-    <nav class="container mx:auto flex justify-between items-center">
-      <div  class="navbar-logo size-20"><img src="https://www.buildersacademy.ai/assets/icons/logowhite.svg" alt="" /></div>{' '}
-      <ul class="flex space-x-4">
-        <li class="text-lg hover:to-blue-950">
-          <Link class=" hover:to-blue-950" to="/">Home</Link>
+    <nav className="container mx-auto flex flex-wrap justify-between items-center p-4">
+      <div className="navbar-logo">
+        <img
+          src="https://www.buildersacademy.ai/assets/icons/logowhite.svg"
+          alt="Logo"
+          className="h-12 w-auto"
+        />
+      </div>
+      <ul className="flex flex-wrap justify-center space-x-4 text-center md:text-left">
+        <li className="text-lg md:text-2xl hover:text-blue-950">
+          <Link to="/">Home</Link>
         </li>
-        <li class="text-lg">
+        <li className="text-lg md:text-2xl hover:text-blue-950">
           <Link to="/about">About</Link>
         </li>
-        <li class= "text-lg">
-          <Link to="/transactions">Transactions</Link>
+        <li className="text-lg md:text-2xl hover:text-blue-950">
+          <Link to="/transactions">Transaction Pools</Link>
         </li>
-        <li  class="text-lg">
+        <li className="text-lg md:text-2xl hover:text-blue-950">
           <Link to="/createTransaction">Create Transaction</Link>
+        </li>
+        <li className="text-lg md:text-2xl hover:text-blue-950">
+          <Link to="/">Logout</Link>
         </li>
       </ul>
     </nav>

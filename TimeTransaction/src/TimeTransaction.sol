@@ -2,6 +2,10 @@
 pragma solidity ^0.8.20;
 
 contract TimeTransactions{
+
+
+    uint256 public transacctionFee = 0;
+
     struct Transaction{
         address creator;
         address recipient;

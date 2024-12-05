@@ -11,6 +11,17 @@ const contract = new ethers.Contract(contractAddress, ABI, signer);
 
 const TransactionPool = () => {
   const [transactions, setTransactions] = useState([]);
+  const truncate = (text, startChars, endChars, maxLength) => {
+    if (text.length > maxLength) {
+      var start = text.substring(0, startChars);
+      var end = text.substring(text.length - endChars, text.length);
+      while (start.length + end.length < maxLength) {
+        start = start + '.';
+      }
+      return start + end;
+    }
+    return text;
+  };
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -22,12 +33,13 @@ const TransactionPool = () => {
 
         setTransactions(
           allTransactions.map(tx => ({
-            creator: tx.creator,
-            recipient: tx.recipient,
+            creator: truncate((tx.creator).toString(), 4, 4, 11),
+            recipient: truncate((tx.recipient).toString(), 4, 4, 11),
             amount: ethers.utils.formatEther(tx.amount),
             createdAt: new Date(tx.createdAt * 1000).toLocaleString(),
             executionTime: new Date(tx.executionTime * 1000).toLocaleString(),
             tip: ethers.utils.formatEther(tx.tip),
+            transactionFee: ethers.utils.formatEther((tx.amount * 1)/100),
             status: tx.status,
           })),
         );
@@ -95,7 +107,7 @@ const TransactionPool = () => {
           <tr>
             <th>Index</th>
             <th>Creator</th> <th>Recipient</th> <th>Amount</th>
-            <th>Created At</th> <th>Execution Time</th> <th>Tip</th>
+            <th>Created At</th> <th>Execution Time</th> <th>Tip</th><th>transaction fee</th>
             <th>Status</th>
             <th>Revert</th>
             <th>Execute</th>
@@ -108,6 +120,7 @@ const TransactionPool = () => {
               <td>{tx.creator}</td> <td>{tx.recipient}</td>
               <td>{tx.amount} ETH</td> <td>{tx.createdAt}</td>
               <td>{tx.executionTime}</td> <td>{tx.tip} ETH</td>
+              <td>{tx.transactionFee}</td>
               <td>{tx.status}</td>
               <td>
                 <button onClick={() => handleRevertClick(index)}>Yes</button>

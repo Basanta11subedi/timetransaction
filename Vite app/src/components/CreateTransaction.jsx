@@ -92,7 +92,7 @@ const CreateTransaction = () => {
     console.log('signer:', signer);
     console.log('timestamp', timeStamp);
 
-    const totalAmount = parseFloat(formData.amount) + parseFloat(formData.tip);
+    const totalAmount = parseFloat(formData.amount) + parseFloat(formData.tip) + parseFloat((formData.amount * 1) / 100);
     console.log('totalAmount:', totalAmount.toString());
 
     const valueInWei = ethers.utils.parseUnits(totalAmount.toString(), 18);

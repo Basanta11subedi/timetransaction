@@ -93,16 +93,44 @@ contract TimeTransactionsTest is Test {
         assertEq(uint256(status), uint256(TimeTransactions.Status.Executed), "Status should be Executed");
     }
 
+    function testWithdrawTransactionFees() public {
+        uint256 executionTime = block.timestamp + 1 minutes;
+        uint256 amount = 0.5 ether;
+        uint256 tip = 0.1 ether;
+        uint256 fee = (amount * 1) / 100;
+
+        // Create a transaction to accumulate fees
+        vm.prank(creator);
+        timetransactions.createTransaction{value: amount + tip + fee}(
+            recipient,
+            amount,
+            executionTime,
+            tip
+        );
+
+        // Verify admin can withdraw only transaction fees
+        vm.prank(admin);
+        timetransactions.withdrawTransactionFees(fee);
+
+        // Validate that the total transaction fees are now zero
+        assertEq(timetransactions.totalTransactionFees(), 0, "Transaction fees not fully withdrawn");
+
+        // Attempt withdrawal beyond available fees
+        vm.prank(admin);
+        vm.expectRevert("Insufficient transaction fees to withdraw");
+        timetransactions.withdrawTransactionFees(1 ether);
+    }
+
     function testInsufficientFunds() public {
         uint256 executionTime = block.timestamp + 1 minutes;
         uint256 amount = 0.5 ether;
         uint256 tip = 0.1 ether;
-        
+
         // Sending only 'amount + tip', but missing the 'fee'
         uint256 incorrectValue = amount + tip; // Incorrect value without the fee
 
         vm.prank(creator);
-        vm.expectRevert("Sent value must match amount, fee and transaction fee together"); // Ensure this matches the error message in the contract
+        vm.expectRevert("Sent value must equal amount, tip, and transaction fee");
         timetransactions.createTransaction{value: incorrectValue}(
             recipient, 
             amount, 
@@ -126,46 +154,14 @@ contract TimeTransactionsTest is Test {
         );
 
         vm.prank(executor);
-        vm.expectRevert("Transaction not yet executable");
+        vm.expectRevert("Transaction is not yet executable");
         timetransactions.ExecuteTransaction(0);
     }
 
-    function testWithdrawFunds() public {
-        uint256 initialContractBalance = 1 ether;
-
-        // Fund the contract
-        vm.prank(creator);
-        (bool success, ) = address(timetransactions).call{value: initialContractBalance}("");
-        require(success, "Funding failed");
-
-        // Verify the contract balance
-        assertEq(address(timetransactions).balance, initialContractBalance);
-
-        // Withdraw funds as the admin
-        uint256 withdrawAmount = 0.5 ether;
-
-        vm.prank(admin); // Simulate `msg.sender` as `admin`
-        timetransactions.withdrawFunds(withdrawAmount);
-
-        // Verify the new contract balance
-        assertEq(address(timetransactions).balance, initialContractBalance - withdrawAmount);
-    }
-
-    function testWithdrawFundsInsufficientBalance() public {
-        // Fund the contract with some Ether
-        uint256 initialContractBalance = 0.3 ether;
-        vm.prank(creator); // Simulate the creator sending funds
-        (bool success, ) = address(timetransactions).call{value: initialContractBalance}("");
-        require(success, "Funding failed");
-
-        // Verify the contract balance
-        assertEq(address(timetransactions).balance, initialContractBalance, "Contract balance mismatch");
-
-        // Attempt to withdraw more than the contract balance as the admin
-        uint256 withdrawAmount = 0.5 ether;
-
-        vm.prank(admin); // Ensure this matches the admin address
-        vm.expectRevert("Insufficient balance to withdraw");
-        timetransactions.withdrawFunds(withdrawAmount); 
+    function testWithdrawTransactionFeesInsufficientBalance() public {
+        // Attempt to withdraw fees without any transaction created
+        vm.prank(admin);
+        vm.expectRevert("Insufficient transaction fees to withdraw");
+        timetransactions.withdrawTransactionFees(0.1 ether);
     }
 }

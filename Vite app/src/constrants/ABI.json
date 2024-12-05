@@ -176,6 +176,19 @@
   },
   {
     "type": "function",
+    "name": "totalTransactionFees",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "transactionCount",
     "inputs": [],
     "outputs": [
@@ -238,7 +251,7 @@
   },
   {
     "type": "function",
-    "name": "withdrawFunds",
+    "name": "withdrawTransactionFees",
     "inputs": [
       {
         "name": "_amount",

@@ -122,55 +122,79 @@ const CreateTransaction = () => {
 
     setFormData({ ...formData, [name]: value });
   };
-
   return (
-    <div class="flex-grow items-center justify-center">
-      <div ><button class= "color: bg-green-500 rounded-2xl pr-2 pl-2  hover:bg-blue-950 hover:text-white" onClick={connectWallet}>Connect Wallet</button>
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-200 space-y-6">
+      <button
+        className="bg-green-500 rounded-2xl px-4 py-2 text-white hover:bg-blue-950 hover:text-white"
+        onClick={connectWallet}
+      >
+        Connect Wallet
+      </button>
+      <div className="space-y-6">
+        {/* Form 1 */}
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white border border-black p-6 rounded-lg shadow-md w-96"
+        >
+          <h2 className="text-xl font-bold mb-4">Transaction Form</h2>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Recipient:
+            </label>
+            <input
+              type="text"
+              name="recipient"
+              value={formData.recipient}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-black rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Amount:
+            </label>
+            <input
+              type="text"
+              name="amount"
+              value={formData.amount}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-black rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Execution Time:
+            </label>
+            <input
+              type="text"
+              name="executionTime"
+              value={formData.executionTime}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-black rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Tip:</label>
+            <input
+              type="text"
+              name="tip"
+              value={formData.tip}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-black rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-green-500 rounded-2xl px-4 py-2 text-white hover:bg-blue-950 hover:text-white"
+          >
+            Submit
+          </button>
+        </form>
       </div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          {' '}
-          <label>Recipient:</label>
-          <input
-            type="text"
-            name="recipient"
-            value={formData.recipient}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Amount:</label>
-          <input
-            type="text"
-            name="amount"
-            value={formData.amount}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>ExecutionTime:</label>
-          <input
-            type="text"
-            name="executionTime"
-            value={formData.executionTime}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Tip:</label>
-          <input
-            type="text"
-            name="tip"
-            value={formData.tip}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">Submit</button>
-      </form>
     </div>
   );
 };

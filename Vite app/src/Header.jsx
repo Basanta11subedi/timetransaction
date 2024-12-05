@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
-    <nav className="navbar">
+    <div className="">
       <div className="navbar-logo">MyApp</div>{' '}
-      <ul className="navbar-links">
+      <ul className="">
         <li>
           <Link to="/">Home</Link>
         </li>
@@ -25,7 +25,7 @@ const Header = () => {
           <Link to="/createTransaction">Create Transaction</Link>
         </li>
       </ul>
-    </nav>
+    </div>
   );
 };
 

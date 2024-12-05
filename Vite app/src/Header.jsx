@@ -3,25 +3,19 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
-    <nav className="navbar">
-      <div className="navbar-logo">MyApp</div>{' '}
-      <ul className="navbar-links">
-        <li>
-          <Link to="/">Home</Link>
+    <nav class="container mx:auto flex justify-between items-center">
+      <div  class="navbar-logo size-20"><img src="https://www.buildersacademy.ai/assets/icons/logowhite.svg" alt="" /></div>{' '}
+      <ul class="flex space-x-4">
+        <li class="text-lg hover:to-blue-950">
+          <Link class=" hover:to-blue-950" to="/">Home</Link>
         </li>
-        <li>
+        <li class="text-lg">
           <Link to="/about">About</Link>
         </li>
-        <li>
-          <Link to="/services">Services</Link>
-        </li>
-        <li>
+        <li class= "text-lg">
           <Link to="/transactions">Transactions</Link>
         </li>
-        <li>
-          <Link to="/contact">Contact</Link>
-        </li>
-        <li>
+        <li  class="text-lg">
           <Link to="/createTransaction">Create Transaction</Link>
         </li>
       </ul>

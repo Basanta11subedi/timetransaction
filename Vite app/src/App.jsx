@@ -6,6 +6,7 @@ import { ethers } from 'ethers';
 import './App.css';
 // import { parseEther } from 'ethers/lib/utils';
 import Header from './Header';
+import Footer from './Footer';
 import TransactionPool from './components/TransactionPool';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import CreateTransaction from './components/CreateTransaction';
@@ -20,11 +21,10 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/services" element={<ServicesPage />} />
           <Route path="/transactions" element={<TransactionPool />} />
-          <Route path="/contact" element={<ContactPage />} />
           <Route path="/createTransaction" element={<CreateTransaction />} />
         </Routes>
+        <Footer />
       </Router>
     </div>
   );
@@ -34,7 +34,7 @@ export default App;
 
 const HomePage = () => (
   <div>
-    <h1>Home Page</h1>
+
   </div>
 );
 const AboutPage = () => (
@@ -42,11 +42,7 @@ const AboutPage = () => (
     <h1>About Page</h1>
   </div>
 );
-const ServicesPage = () => (
-  <div>
-    <h1>Services Page</h1>
-  </div>
-);
+
 const ContactPage = () => (
   <div>
     <h1>Contact Page</h1>

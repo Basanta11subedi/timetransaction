@@ -10,6 +10,9 @@ const contract = new ethers.Contract(contractAddress, ABI, signer);
 const TransactionPool = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [creator, setCreator] = useState('');
+  const [recipient, setRecipient] = useState('');
+
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -32,6 +35,8 @@ const TransactionPool = () => {
             transactionFee: ethers.utils.formatEther(tx.amount) * 0.01 // 1% transaction fee
           }))
         );
+        setCreator(tx.creator);
+        setRecipient(tx.recipient);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching transactions:', error);
@@ -95,7 +100,7 @@ const TransactionPool = () => {
                 <td className="px-4 py-2">
                   {tx.status === 0 && ( // Pending
                     <>
-                      {tx.creator === signer._address && ( // Creator can revert
+                      {creator === signer._address && ( // Creator can revert
                         <button
                           onClick={() => handleRevertClick(index)}
                           className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 mr-2"
@@ -103,7 +108,7 @@ const TransactionPool = () => {
                           Revert
                         </button>
                       )}
-                      {tx.recipient !== signer._address && ( // Execute if not the recipient
+                      {recipient !== signer._address && ( // Execute if not the recipient
                         <button
                           onClick={() => handleExecuteClick(index)}
                           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"

@@ -12,20 +12,12 @@ const Header = () => {
         />
       </div>
       <ul className="flex flex-wrap justify-center space-x-4 text-center md:text-left">
-        <li className="text-lg md:text-2xl hover:text-blue-950">
-          <Link to="/">Home</Link>
-        </li>
-        <li className="text-lg md:text-2xl hover:text-blue-950">
-          <Link to="/about">About</Link>
-        </li>
-        <li className="text-lg md:text-2xl hover:text-blue-950">
+      <li className="text-lg md:text-2xl hover:text-blue-950">
           <Link to="/transactions">Transaction Pools</Link>
         </li>
+
         <li className="text-lg md:text-2xl hover:text-blue-950">
-          <Link to="/createTransaction">Create Transaction</Link>
-        </li>
-        <li className="text-lg md:text-2xl hover:text-blue-950">
-          <Link to="/">Logout</Link>
+          <Link to="/about">About</Link>
         </li>
       </ul>
     </nav>

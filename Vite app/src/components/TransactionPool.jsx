@@ -1,8 +1,6 @@
 import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import ABI from '../constrants/ABI.json';
-import CreateTransaction from './CreateTransaction';
-import { Link } from 'react-router-dom';
 
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
@@ -26,20 +24,20 @@ const TransactionPool = () => {
         
         setTransactions(
           allTransactions.map(tx => ({
-            creator: truncate((tx.creator).toString(), 4, 4, 11),
-            recipient: truncate((tx.recipient).toString(), 4, 4, 11),
+            creator: (tx.creator),
+            recipient: (tx.recipient),
             amount: ethers.utils.formatEther(tx.amount),
             createdAt: new Date(tx.createdAt * 1000).toLocaleString(),
             executionTime: new Date(tx.executionTime * 1000).toLocaleString(),
             tip: ethers.utils.formatEther(tx.tip),
-            transactionFee: ethers.utils.formatEther((tx.amount * 1)/100),
+            
             status: tx.status,
             transactionFee: ethers.utils.formatEther(tx.amount) * 0.01 // 1% transaction fee
           }))
         );
-        setCreator(tx.creator);
-        setRecipient(tx.recipient);
-        console.log(transactions.status);
+        
+        setCreator()
+        console.log(creator);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching transactions:', error);
@@ -70,12 +68,8 @@ const TransactionPool = () => {
   };
 
   return (
-    <div>
-    
     <div className="container mx-auto p-6">
-    <h1 className="text-3xl font-semibold mb-6"><Link to="/createTransaction">Create Transaction</Link></h1>
       <h1 className="text-3xl font-semibold mb-6">Transactions</h1>
-      
       {loading ? (
         <p>Loading transactions...</p>
       ) : (
@@ -107,20 +101,28 @@ const TransactionPool = () => {
                 <td className="px-4 py-2">
                   {tx.status === 0 && ( // Pending
                     <>
-                      {creator === signer._address && ( // Creator can revert
+                      {tx.creator === signer._address && ( // Creator can revert
                         <button
                           onClick={() => handleRevertClick(index)}
                           className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 mr-2"
                         >
                           Revert
+                        {console.log(signer._address)}
+        
+        {console.log("Creator:",creator)}
+                          
                         </button>
                       )}
-                      {recipient !== signer._address && ( // Execute if not the recipient
+                      {tx.recipient !== signer._address && ( // Execute if not the recipient
                         <button
                           onClick={() => handleExecuteClick(index)}
                           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 mr-2"
                         >
                           Execute
+                        {console.log(signer._address)}
+                        {console.log(tx.recipient)}
+
+
                         </button>
                       )}
                       <span className="text-yellow-500">Pending</span>
@@ -131,7 +133,7 @@ const TransactionPool = () => {
                     <span className="text-green-500">Executed</span>
                   )}
 
-                  {tx.status === 3 && ( // Reverted
+                  {tx.status === 2 && ( // Reverted
                     <span className="text-red-500">Reverted</span>
                   )}
                 </td>
@@ -140,7 +142,6 @@ const TransactionPool = () => {
           </tbody>
         </table>
       )}
-    </div>
     </div>
   );
 };

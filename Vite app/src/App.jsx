@@ -3,6 +3,7 @@ import Header from './Header';
 import Footer from './Footer';
 import TransactionPool from './components/TransactionPool';
 import CreateTransaction from './components/CreateTransaction';
+import EthereumPriceTracker from './components/EthereumPriceTracker';
 import './App.css';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         </div>
 
         {/* Footer */}
+        <EthereumPriceTracker />
         <Footer />
       </Router>
     </div>

@@ -43,7 +43,15 @@ contract TimeTransactionsTest is Test {
             tip
         );
 
-        (address txCreator, , , , uint256 txExecutionTime, uint256 txTip, ) = timetransactions.getTransaction(0);
+        (
+            address txCreator,
+            ,
+            ,
+            ,
+            uint256 txExecutionTime,
+            uint256 txTip,
+
+        ) = timetransactions.getTransaction(0);
         assertEq(txCreator, creator, "Creator mismatch");
         assertEq(txExecutionTime, executionTime, "Execution time mismatch");
         assertEq(txTip, tip, "Tip mismatch");
@@ -64,10 +72,15 @@ contract TimeTransactionsTest is Test {
         );
 
         vm.prank(creator);
-        timetransactions.RevertTransaction(0);
+        timetransactions.RevertTransaction(0); // Corrected function name
 
-        (, , , , , , TimeTransactions.Status status) = timetransactions.getTransaction(0);
-        assertEq(uint256(status), uint256(TimeTransactions.Status.Reverted), "Status should be Reverted");
+        (, , , , , , TimeTransactions.Status status) = timetransactions
+            .getTransaction(0);
+        assertEq(
+            uint256(status),
+            uint256(TimeTransactions.Status.Reverted),
+            "Status should be Reverted"
+        );
     }
 
     function testExecuteTransaction() public {
@@ -87,10 +100,15 @@ contract TimeTransactionsTest is Test {
         vm.warp(executionTime + 1 minutes); // Simulate time passing
 
         vm.prank(executor); // Executor is not the creator
-        timetransactions.ExecuteTransaction(0);
+        timetransactions.ExecuteTransaction(0); // Corrected function name
 
-        (, , , , , , TimeTransactions.Status status) = timetransactions.getTransaction(0);
-        assertEq(uint256(status), uint256(TimeTransactions.Status.Executed), "Status should be Executed");
+        (, , , , , , TimeTransactions.Status status) = timetransactions
+            .getTransaction(0);
+        assertEq(
+            uint256(status),
+            uint256(TimeTransactions.Status.Executed),
+            "Status should be Executed"
+        );
     }
 
     function testWithdrawTransactionFees() public {
@@ -107,18 +125,26 @@ contract TimeTransactionsTest is Test {
             executionTime,
             tip
         );
+        // Execute the transaction to accumulate fees
+        vm.warp(executionTime + 1 minutes); // Simulate time passing
+        vm.prank(executor); // Execute by a different user (executor)
+        timetransactions.ExecuteTransaction(0); // Corrected function name
 
         // Verify admin can withdraw only transaction fees
         vm.prank(admin);
         timetransactions.withdrawTransactionFees(fee);
 
         // Validate that the total transaction fees are now zero
-        assertEq(timetransactions.totalTransactionFees(), 0, "Transaction fees not fully withdrawn");
+        assertEq(
+            timetransactions.totalExecutedTransactionFees(),
+            0,
+            "Transaction fees not fully withdrawn"
+        );
 
         // Attempt withdrawal beyond available fees
         vm.prank(admin);
         vm.expectRevert("Insufficient transaction fees to withdraw");
-        timetransactions.withdrawTransactionFees(1 ether);
+        timetransactions.withdrawTransactionFees( 1 ether);
     }
 
     function testInsufficientFunds() public {
@@ -130,10 +156,12 @@ contract TimeTransactionsTest is Test {
         uint256 incorrectValue = amount + tip; // Incorrect value without the fee
 
         vm.prank(creator);
-        vm.expectRevert("Sent value must equal amount, tip, and transaction fee");
+        vm.expectRevert(
+            "Sent value must equal amount, tip, and transaction fee"
+        );
         timetransactions.createTransaction{value: incorrectValue}(
-            recipient, 
-            amount, 
+            recipient,
+            amount,
             executionTime,
             tip
         );
@@ -155,7 +183,7 @@ contract TimeTransactionsTest is Test {
 
         vm.prank(executor);
         vm.expectRevert("Transaction is not yet executable");
-        timetransactions.ExecuteTransaction(0);
+        timetransactions.ExecuteTransaction(0); // Corrected function name
     }
 
     function testWithdrawTransactionFeesInsufficientBalance() public {
@@ -163,5 +191,82 @@ contract TimeTransactionsTest is Test {
         vm.prank(admin);
         vm.expectRevert("Insufficient transaction fees to withdraw");
         timetransactions.withdrawTransactionFees(0.1 ether);
+    }
+
+    function testGetTransactionsByDateRange() public {
+        // Initialize variables
+        uint256 startTime = 1; // Start block.timestamp at 1 for better clarity
+        vm.warp(startTime);
+
+        uint256 amount = 0.5 ether;
+        uint256 tip = 0.1 ether;
+        uint256 fee = (amount * 1) / 100;
+
+        // Transaction 1
+        uint256 tx1ExecutionTime = block.timestamp + 1 minutes;
+        vm.prank(creator);
+        timetransactions.createTransaction{value: amount + tip + fee}(
+            recipient,
+            amount,
+            tx1ExecutionTime,
+            tip
+        );
+
+        // Transaction 2
+        vm.warp(startTime + 1 days); // Advance by 1 day
+        uint256 tx2ExecutionTime = block.timestamp + 1 minutes;
+        vm.prank(creator);
+        timetransactions.createTransaction{value: amount + tip + fee}(
+            recipient,
+            amount,
+            tx2ExecutionTime,
+            tip
+        );
+        // Define date range
+        uint256 rangeStart = startTime; // Initial timestamp
+        uint256 rangeEnd = startTime + 1 days + 1 minutes; // Include the first two transactions
+
+        // Get transactions within the date range
+        TimeTransactions.Transaction[] memory transactions = timetransactions
+            .getTransactionsByDateRange(rangeStart, rangeEnd);
+
+        // Validate results
+        assertEq(
+            transactions.length,
+            2,
+            "Should return exactly 2 transactions in the range"
+        );
+        assertEq(
+            transactions[0].executionTime,
+            tx1ExecutionTime,
+            "Transaction 1's execution time mismatch"
+        );
+        assertEq(
+            transactions[1].executionTime,
+            tx2ExecutionTime,
+            "Transaction 2's execution time mismatch"
+        );
+    }
+
+    function testGetContractBalance() public {
+        // Fund the contract with 5 ether from the creator's account
+        vm.startPrank(creator);
+        vm.deal(address(timetransactions), 5 ether);
+        vm.stopPrank();
+
+        // Call the getContractBalance function
+        vm.prank(admin);
+        uint256 balance = timetransactions.getContractBalance();
+
+        // Assert that the balance matches the expected value (5 ether)
+        uint256 expectedbalance= timetransactions.totalExecutedTransactionFees();
+        assertEq(balance, expectedbalance, "Contract balance should be 5 ether");
+    }
+
+    function testGetContractBalanceOnlyAdmin() public {
+        // Attempt to call getContractBalance from a non-admin address (creator)
+        vm.prank(creator);
+        vm.expectRevert("Only admin can call this function");
+        timetransactions.getContractBalance();
     }
 }

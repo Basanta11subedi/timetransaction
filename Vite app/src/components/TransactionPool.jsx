@@ -1,6 +1,8 @@
 import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import ABI from '../constrants/ABI.json';
+import { Link } from 'react-router-dom';
+
 
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
@@ -69,6 +71,7 @@ const TransactionPool = () => {
 
   return (
     <div className="container mx-auto p-6">
+    <h1 className="text-3xl font-semibold mb-6"><Link to="/createTransaction">Create Transaction</Link></h1>
       <h1 className="text-3xl font-semibold mb-6">Transactions</h1>
       {loading ? (
         <p>Loading transactions...</p>

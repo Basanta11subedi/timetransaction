@@ -3,11 +3,19 @@ import Header from './Header';
 import Footer from './Footer';
 import TransactionPool from './components/TransactionPool';
 import CreateTransaction from './components/CreateTransaction';
-import EthereumPriceTracker from './components/EthereumPriceTracker';
+// import EthereumPriceTracker from './components/EthereumPriceTracker';
 import './App.css';
+import { ethers } from "ethers";
+import AdminPannel from './components/AdminPannel';
+import { useState } from 'react';
+// import { providers } from 'ethers';
 
 function App() {
+  // const [address, setAddress] = useState('');
+  
+
   return (
+    
     <div className="flex flex-col min-h-screen">
       <Router>
         {/* Header */}
@@ -24,10 +32,12 @@ function App() {
         </div>
 
         {/* Footer */}
-        <EthereumPriceTracker />
+        {/* <EthereumPriceTracker /> */}
         <Footer />
       </Router>
     </div>
+    
+  
   );
 }
 

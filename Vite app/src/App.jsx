@@ -7,12 +7,46 @@ import CreateTransaction from './components/CreateTransaction';
 import './App.css';
 import { ethers } from "ethers";
 import AdminPannel from './components/AdminPannel';
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { setGlobalState } from './store';
 // import { providers } from 'ethers';
 
 function App() {
-  // const [address, setAddress] = useState('');
+
   
+  const isWalletConnected = async () => {
+    try {
+      if (!window.ethereum) return alert('MetaMask not found');
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const accounts = await provider.listAccounts();
+
+      window.ethereum.on('chainChanged', (chainId) => {
+        window.location.reload();
+      });
+
+      window.ethereum.on('accountsChanged', async () => {
+        setGlobalState('connectedAccount', accounts[0]?.toLowerCase() || '');
+        await isWalletConnected();
+      });
+
+      if (accounts.length) {
+        setGlobalState('connectedAccount', accounts[0].toLowerCase());
+        // window.location.reload();
+      } else {
+        alert('Please connect wallet');
+        console.log('No account found');
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    const checkWalletConnection = async () => {
+      await isWalletConnected();
+    };
+
+    checkWalletConnection();
+
+  }, []);
 
   return (
     
@@ -28,6 +62,7 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/transactions" element={<TransactionPool />} />
             <Route path="/createTransaction" element={<CreateTransaction />} />
+            <Route path="/withDrawn" element={<AdminPannel />} />
           </Routes>
         </div>
 

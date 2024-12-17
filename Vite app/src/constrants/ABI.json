@@ -77,50 +77,13 @@
   },
   {
     "type": "function",
-    "name": "getAllTransactions",
+    "name": "getContractBalance",
     "inputs": [],
     "outputs": [
       {
         "name": "",
-        "type": "tuple[]",
-        "internalType": "struct TimeTransactions.Transaction[]",
-        "components": [
-          {
-            "name": "creator",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "recipient",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "amount",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "createdAt",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "executionTime",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "tip",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "status",
-            "type": "uint8",
-            "internalType": "enum TimeTransactions.Status"
-          }
-        ]
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "stateMutability": "view"
@@ -176,7 +139,73 @@
   },
   {
     "type": "function",
-    "name": "totalTransactionFees",
+    "name": "getTransactionsByDateRange",
+    "inputs": [
+      {
+        "name": "startTimestamp",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "endTimestamp",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple[]",
+        "internalType": "struct TimeTransactions.Transaction[]",
+        "components": [
+          {
+            "name": "creator",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "recipient",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "amount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "createdAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "executionTime",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "tip",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "status",
+            "type": "uint8",
+            "internalType": "enum TimeTransactions.Status"
+          },
+          {
+            "name": "transactionFee",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "totalExecutedTransactionFees",
     "inputs": [],
     "outputs": [
       {
@@ -245,6 +274,11 @@
         "name": "status",
         "type": "uint8",
         "internalType": "enum TimeTransactions.Status"
+      },
+      {
+        "name": "transactionFee",
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "stateMutability": "view"

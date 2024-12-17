@@ -22,7 +22,9 @@ const CreateTransaction = () => {
   const [initializeContract, setContractInstance] = useState(null);
   const [timeStamp, setTimeStamp] = useState(null);
   const [account, setAccount] = useState(null);
-  const contractAddress = '0xFD8046c82ac3B1B5A5F45922abE4334970e4aA6b';
+  // const contractAddress = '0xFD8046c82ac3B1B5A5F45922abE4334970e4aA6b';
+  const contractAddress = '0xf45f3c2c69555a3e2ba04a7c2f2dd7ff23433816';
+
 
   const [price, setPrice] = useState(null);
     const [previousPrice, setPreviousPrice] = useState(null);
@@ -98,11 +100,11 @@ const CreateTransaction = () => {
         return ethers.utils.parseUnits(amount.toString(), 18); // Convert hours to seconds
       case 'doller':
         
-        const value = ethers.utils.parseUnits((parseFloat(amountInt * dollarEth)).toString(), 18); // Convert days to seconds
+        const value = ethers.utils.parseUnits((parseFloat((amountInt * dollarEth).toFixed(18))).toString(), 18); // Convert days to seconds
         console.log(value.toString());
         return value
       default:
-        const value1 = ethers.utils.parseUnits((parseFloat(amountInt * dollarEth)).toString(), 18); // Convert minutes to seconds
+        const value1 = ethers.utils.parseUnits((parseFloat((amountInt * dollarEth).toFixed(18))).toString(), 18); // Convert minutes to seconds
         console.log(value1.toString());
         return value1
       }
@@ -122,7 +124,7 @@ const CreateTransaction = () => {
         console.log( "tip: ",value.toString());
         return value;
       default:
-        return ethers.utils.parseUnits((parseFloat(tipInt * dollarEth)).toString(), 18); // Convert minutes to seconds
+        return ethers.utils.parseUnits((parseFloat((tipInt * dollarEth).toFixed(18))).toString(), 18); // Convert minutes to seconds
     }
   };
 
@@ -201,9 +203,9 @@ const CreateTransaction = () => {
 
     const createTx = await initializeContract.createTransaction(
       formData.recipient,
-      amtCurrent,
+      parseInt(amtCurrent),
       days,
-      tipCurrent,
+      parseInt(tipCurrent),
       { value: totalAmount.toString()}
     );
 
